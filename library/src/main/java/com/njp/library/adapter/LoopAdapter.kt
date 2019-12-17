@@ -6,16 +6,13 @@ import androidx.recyclerview.widget.RecyclerView.*
 /**
  * 实现了无限滚动效果的RecyclerViewAdapter
  */
-abstract class LoopAdapter<VH : ViewHolder> : RecyclerView.Adapter<VH>() {
+abstract class LoopAdapter<VH : ViewHolder> : RecyclerView.Adapter<VH>(), Countable {
 
     //mRecyclerView用来初始化下标位置
     private var mRecyclerView: RecyclerView? = null
 
     //返回最大数值来实现无限滚动效果
     final override fun getItemCount(): Int = if (getRealItemCount() == 0) 0 else Int.MAX_VALUE
-
-    //返回真实的数据条目数
-    abstract fun getRealItemCount(): Int
 
     //通过取余计算出当前的下标
     private fun calculateRealPosition(position: Int) = position % getRealItemCount()

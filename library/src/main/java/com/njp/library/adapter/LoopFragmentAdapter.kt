@@ -11,7 +11,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 /**
  * 实现了无限滚动效果的FragmentStateAdapter
  */
-abstract class LoopFragmentAdapter : FragmentStateAdapter {
+abstract class LoopFragmentAdapter : FragmentStateAdapter, Countable {
 
     private val tag = "LoopFragmentAdapter"
 
@@ -29,9 +29,6 @@ abstract class LoopFragmentAdapter : FragmentStateAdapter {
 
     //返回最大数值来实现无限滚动效果
     final override fun getItemCount(): Int = if (getRealItemCount() == 0) 0 else Int.MAX_VALUE
-
-    //返回真实的数据条目数
-    abstract fun getRealItemCount(): Int
 
     //通过取余计算出当前的下标
     private fun calculateRealPosition(position: Int) = position % getRealItemCount()

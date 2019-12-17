@@ -1,6 +1,7 @@
 package com.njp.library.controller
 
 import android.os.Handler
+import android.util.Log
 import androidx.annotation.IntDef
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -13,6 +14,8 @@ import androidx.viewpager2.widget.ViewPager2
  * ViewPager2自动播放的控制器
  */
 class AutoPlayController : LifecycleObserver {
+
+    val tag = "AutoPlayController"
 
     companion object {
         //界面可交互自动播放
@@ -39,7 +42,7 @@ class AutoPlayController : LifecycleObserver {
 
     private var autoPlay: Boolean = true
 
-    private var mInterval: Long = 3000L
+    private var mInterval: Long = 2000L
 
     private var mViewPager2: ViewPager2? = null
 
@@ -133,7 +136,24 @@ class AutoPlayController : LifecycleObserver {
                     }
                 }
             }
+
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                Log.d(
+                    tag,
+                    "onPageScrolled::position:$position,positionOffset:$positionOffset,positionOffsetPixels:$positionOffsetPixels"
+                )
+            }
+
+            override fun onPageSelected(position: Int) {
+                Log.d(tag, "onPageSelected::position$position")
+            }
         })
+
+
     }
 
     private fun increaseIndex() {
