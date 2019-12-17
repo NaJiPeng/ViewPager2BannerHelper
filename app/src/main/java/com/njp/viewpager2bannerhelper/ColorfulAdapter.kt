@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.njp.library.loop.LoopAdapter
+import com.njp.library.adapter.LoopAdapter
 
 class ColorfulAdapter : LoopAdapter<ColorfulAdapter.ViewHolder>() {
 

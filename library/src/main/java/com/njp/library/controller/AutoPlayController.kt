@@ -1,4 +1,4 @@
-package com.njp.library.autoplay
+package com.njp.library.controller
 
 import android.os.Handler
 import androidx.annotation.IntDef

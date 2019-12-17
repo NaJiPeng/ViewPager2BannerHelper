@@ -1,12 +1,28 @@
-package com.njp.library.loop
+package com.njp.library.adapter
 
+import android.util.Log
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.*
+import androidx.viewpager2.adapter.FragmentStateAdapter
 
 /**
- * 实现了无限滚动效果的RecyclerViewAdapter
+ * 实现了无限滚动效果的FragmentStateAdapter
  */
-abstract class LoopAdapter<VH : ViewHolder> : RecyclerView.Adapter<VH>() {
+abstract class LoopFragmentAdapter : FragmentStateAdapter {
+
+    private val tag = "LoopFragmentAdapter"
+
+    constructor(fragmentActivity: FragmentActivity) : super(fragmentActivity)
+
+    constructor(fragment: Fragment) : super(fragment)
+
+    constructor(fragmentManager: FragmentManager, lifecycle: Lifecycle) : super(
+        fragmentManager,
+        lifecycle
+    )
 
     //mRecyclerView用来初始化下标位置
     private var mRecyclerView: RecyclerView? = null
@@ -23,36 +39,20 @@ abstract class LoopAdapter<VH : ViewHolder> : RecyclerView.Adapter<VH>() {
     private val mObserver = object : RecyclerView.AdapterDataObserver() {
         override fun onChanged() {
             if (getRealItemCount() != 0) {
+                Log.i(tag, "onChanged")
                 //初始化：起始坐标设置到Int.MAX_VALUE/2附近，保证前后都可无限滚动
                 mRecyclerView?.scrollToPosition(Int.MAX_VALUE / 2 - Int.MAX_VALUE / 2 % getRealItemCount())
             }
         }
     }
 
-    final override fun onBindViewHolder(holder: VH, position: Int) {
+    final override fun createFragment(position: Int): Fragment {
+        Log.i(tag, "createFragment:$position")
         //直接计算出当前下标，交给子类实现
-        onBindRealViewHolder(holder, calculateRealPosition(position))
+        return createRealFragment(calculateRealPosition(position))
     }
 
-    abstract fun onBindRealViewHolder(holder: VH, realPosition: Int)
-
-    final override fun onBindViewHolder(holder: VH, position: Int, payloads: MutableList<Any>) {
-        //直接计算出当前下标，交给子类实现
-        onBindRealViewHolder(holder, calculateRealPosition(position), payloads)
-    }
-
-    fun onBindRealViewHolder(holder: VH, position: Int, payloads: MutableList<Any>) {
-        onBindRealViewHolder(holder, calculateRealPosition(position))
-    }
-
-    final override fun getItemId(position: Int): Long {
-        //直接计算出当前下标，交给子类实现
-        return getRealItemId(calculateRealPosition(position))
-    }
-
-    fun getRealItemId(realPosition: Int): Long {
-        return NO_ID
-    }
+    abstract fun createRealFragment(realPosition: Int): Fragment
 
     final override fun getItemViewType(position: Int): Int {
         //直接计算出当前下标，交给子类实现
@@ -69,6 +69,7 @@ abstract class LoopAdapter<VH : ViewHolder> : RecyclerView.Adapter<VH>() {
      * 所以在这里注册监听并手动调用onChanged，以保证初始化操作的执行
      */
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        Log.i(tag, "onAttachedToRecyclerView")
         super.onAttachedToRecyclerView(recyclerView)
         mRecyclerView = recyclerView
         registerAdapterDataObserver(mObserver)
@@ -79,6 +80,7 @@ abstract class LoopAdapter<VH : ViewHolder> : RecyclerView.Adapter<VH>() {
      * 注销监听并移除强引用，防止出现内存泄漏的问题
      */
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        Log.i(tag, "onDetachedFromRecyclerView")
         super.onDetachedFromRecyclerView(recyclerView)
         mRecyclerView = null
         unregisterAdapterDataObserver(mObserver)

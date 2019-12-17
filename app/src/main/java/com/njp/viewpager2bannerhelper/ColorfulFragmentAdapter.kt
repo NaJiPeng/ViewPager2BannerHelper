@@ -3,7 +3,7 @@ package com.njp.viewpager2bannerhelper
 import android.graphics.Color
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.njp.library.loop.LoopFragmentAdapter
+import com.njp.library.adapter.LoopFragmentAdapter
 
 class ColorfulFragmentAdapter(fragmentActivity: FragmentActivity) :
     LoopFragmentAdapter(fragmentActivity) {

@@ -2,8 +2,7 @@ package com.njp.viewpager2bannerhelper
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import com.njp.library.autoplay.AutoPlayController
+import com.njp.library.controller.AutoPlayController
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
