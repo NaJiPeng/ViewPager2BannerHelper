@@ -7,14 +7,22 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager2"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp" />
+        android:layout_height="200dp">
 
-    <com.njp.library.indicator.DotIndicator
-        android:id="@+id/dotIndicator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.njp.library.indicator.DrawableIndicator
+            android:id="@+id/indicator"
+            app:active_item_drawable="@drawable/ic_love"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="5dp" />
+    </RelativeLayout>
 
 </LinearLayout>

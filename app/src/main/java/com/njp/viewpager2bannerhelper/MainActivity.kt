@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
             .setLifecycleOwner(this)
             .setViewPager2(viewPager2)
 
-        dotIndicator.setupWithViewPager2(viewPager2)
+        indicator.setupWithViewPager2(viewPager2)
 
 
     }
