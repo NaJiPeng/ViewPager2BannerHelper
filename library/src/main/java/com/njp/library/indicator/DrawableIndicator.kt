@@ -167,9 +167,7 @@ class DrawableIndicator : Indicator, RelativeLayout {
             notifyDataSetChanged()
         }
 
-        override fun getItemViewType(position: Int): Int {
-            return if (mActiveIndex == position) 1 else 0
-        }
+        override fun getItemViewType(position: Int) = if (mActiveIndex == position) 1 else 0
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
@@ -182,9 +180,7 @@ class DrawableIndicator : Indicator, RelativeLayout {
             )
         }
 
-        override fun getItemCount(): Int {
-            return mCount
-        }
+        override fun getItemCount() = mCount
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.imageView.setImageResource(

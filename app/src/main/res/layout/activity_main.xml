@@ -23,8 +23,8 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="5dp"
             app:active_item_drawable="@drawable/ic_love"
-            app:active_item_height="20dp"
-            app:active_item_width="20dp" />
+            app:active_item_height="13dp"
+            app:active_item_width="13dp" />
     </RelativeLayout>
 
 </LinearLayout>

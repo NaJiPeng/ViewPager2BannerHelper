@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.njp.library.controller.AutoPlayController
 import com.njp.library.controller.AutoPlayMode
+import com.njp.library.indicator.DrawableIndicator
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -12,7 +13,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewPager2.adapter = ImageAdapter(
+        viewPager2.adapter = MyAdapter(
             listOf(
                 "https://th.wallhaven.cc/lg/vg/vg3wm5.jpg",
                 "https://th.wallhaven.cc/lg/5w/5w6j85.jpg",
