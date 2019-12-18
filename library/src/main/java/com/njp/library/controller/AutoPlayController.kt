@@ -1,8 +1,6 @@
 package com.njp.library.controller
 
 import android.os.Handler
-import android.util.Log
-import androidx.annotation.IntDef
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -15,27 +13,6 @@ import androidx.viewpager2.widget.ViewPager2
  */
 class AutoPlayController : LifecycleObserver {
 
-    val tag = "AutoPlayController"
-
-    companion object {
-        //界面可交互自动播放
-        const val AUTO_PLAY_MODE_ACTIVE = 0
-        //界面可见自动播放(默认)
-        const val AUTO_PLAY_MODE_VISIBLE = 1
-        //始终自动播放
-        const val AUTO_PLAY_MODE_WHOLE = 2
-        //不自动播放
-        const val AUTO_PLAY_MODE_NONE = 3
-
-        @IntDef(
-            AUTO_PLAY_MODE_ACTIVE,
-            AUTO_PLAY_MODE_VISIBLE,
-            AUTO_PLAY_MODE_WHOLE,
-            AUTO_PLAY_MODE_NONE
-        )
-        annotation class AutoPlayMode
-    }
-
     private val mHandler = Handler()
 
     private val mRunnable = Runnable { increaseIndex() }
@@ -46,7 +23,7 @@ class AutoPlayController : LifecycleObserver {
 
     private var mViewPager2: ViewPager2? = null
 
-    private var mAutoPlayMode = AUTO_PLAY_MODE_ACTIVE
+    private var mAutoPlayMode = AutoPlayMode.VISIBLE
 
     fun enableAutoPlay(autoPlay: Boolean) = apply {
         this.autoPlay = autoPlay
@@ -65,7 +42,7 @@ class AutoPlayController : LifecycleObserver {
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
-    fun setAutoPlayMode(@AutoPlayMode autoPlayMode: Int) = apply {
+    fun setAutoPlayMode(autoPlayMode: AutoPlayMode) = apply {
         this.mAutoPlayMode = autoPlayMode
     }
 
@@ -82,42 +59,42 @@ class AutoPlayController : LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     private fun onCreate() {
-        if (AUTO_PLAY_MODE_WHOLE == mAutoPlayMode) {
+        if (AutoPlayMode.WHOLE == mAutoPlayMode) {
             startPlay()
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     private fun onStart() {
-        if (AUTO_PLAY_MODE_VISIBLE == mAutoPlayMode) {
+        if (AutoPlayMode.VISIBLE == mAutoPlayMode) {
             startPlay()
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     private fun onResume() {
-        if (AUTO_PLAY_MODE_ACTIVE == mAutoPlayMode) {
+        if (AutoPlayMode.ACTIVE == mAutoPlayMode) {
             startPlay()
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     private fun onPause() {
-        if (AUTO_PLAY_MODE_ACTIVE == mAutoPlayMode) {
+        if (AutoPlayMode.ACTIVE == mAutoPlayMode) {
             stopPlay()
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     private fun onStop() {
-        if (AUTO_PLAY_MODE_VISIBLE == mAutoPlayMode) {
+        if (AutoPlayMode.VISIBLE == mAutoPlayMode) {
             stopPlay()
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     private fun onDestroy() {
-        if (AUTO_PLAY_MODE_WHOLE == mAutoPlayMode) {
+        if (AutoPlayMode.WHOLE == mAutoPlayMode) {
             stopPlay()
         }
         mViewPager2 = null
@@ -136,24 +113,7 @@ class AutoPlayController : LifecycleObserver {
                     }
                 }
             }
-
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-                Log.d(
-                    tag,
-                    "onPageScrolled::position:$position,positionOffset:$positionOffset,positionOffsetPixels:$positionOffsetPixels"
-                )
-            }
-
-            override fun onPageSelected(position: Int) {
-                Log.d(tag, "onPageSelected::position$position")
-            }
         })
-
-
     }
 
     private fun increaseIndex() {
