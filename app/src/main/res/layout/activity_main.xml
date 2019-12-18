@@ -18,11 +18,13 @@
 
         <com.njp.library.indicator.DrawableIndicator
             android:id="@+id/indicator"
-            app:active_item_drawable="@drawable/ic_love"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="5dp" />
+            android:layout_marginBottom="5dp"
+            app:active_item_drawable="@drawable/ic_love"
+            app:active_item_height="20dp"
+            app:active_item_width="20dp" />
     </RelativeLayout>
 
 </LinearLayout>

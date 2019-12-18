@@ -2,29 +2,29 @@ package com.njp.library.indicator
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.Gravity
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.njp.library.R
+import com.njp.library.decoration.CenterItemDecoration
+import com.njp.library.decoration.MarginItemDecoration
 
 /**
- * Drawable作为指示器
+ * ImageView作为指示器
  */
 class DrawableIndicator : Indicator, RelativeLayout {
 
     private val mAdapter = DrawableIndicatorAdapter()
-
+    private val mCenterItemDecoration = CenterItemDecoration()
+    private val mMarginItemDecoration = MarginItemDecoration(
+        resources.getDimensionPixelSize(R.dimen.item_margin)
+    )
     private var mItemWidth = resources.getDimensionPixelSize(R.dimen.item_size)
     private var mItemHeight = resources.getDimensionPixelSize(R.dimen.item_size)
     private var mActiveItemWidth = resources.getDimensionPixelSize(R.dimen.item_size)
     private var mActiveItemHeight = resources.getDimensionPixelSize(R.dimen.item_size)
-    private var mItemMargin = resources.getDimensionPixelSize(R.dimen.item_margin)
     private var mItemDrawableResource = R.drawable.default_item
     private var mActiveItemDrawableResource = R.drawable.active_item
 
@@ -48,14 +48,14 @@ class DrawableIndicator : Indicator, RelativeLayout {
         layoutParams = layoutParams ?: LayoutParams(
             LayoutParams.MATCH_PARENT,
             LayoutParams.MATCH_PARENT
-        ).apply {
-            //item居中放置
-            gravity = Gravity.CENTER
-        }
+        )
+        gravity = Gravity.CENTER
         val recyclerView = RecyclerView(context).apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             adapter = mAdapter
+            addItemDecoration(mCenterItemDecoration)
+            addItemDecoration(mMarginItemDecoration)
         }
 
         addView(recyclerView)
@@ -79,13 +79,13 @@ class DrawableIndicator : Indicator, RelativeLayout {
             )
             mActiveItemWidth = getDimensionPixelSize(
                 R.styleable.DrawableIndicator_active_item_width,
-                resources.getDimensionPixelSize(R.dimen.item_size)
+                mItemWidth
             )
             mActiveItemHeight = getDimensionPixelSize(
                 R.styleable.DrawableIndicator_active_item_height,
-                resources.getDimensionPixelSize(R.dimen.item_size)
+                mItemHeight
             )
-            mItemMargin = getDimensionPixelSize(
+            mMarginItemDecoration.margin = getDimensionPixelSize(
                 R.styleable.DrawableIndicator_item_margin,
                 resources.getDimensionPixelSize(R.dimen.item_margin)
             )
@@ -99,6 +99,34 @@ class DrawableIndicator : Indicator, RelativeLayout {
             )
             recycle()
         }
+    }
+
+    fun setItemWidth(itemWidth: Int) = apply {
+        this.mItemWidth = itemWidth
+    }
+
+    fun setItemHeight(itemHeight: Int) = apply {
+        this.mItemHeight = itemHeight
+    }
+
+    fun setActiveItemWidth(activeItemWidth: Int) = apply {
+        this.mActiveItemWidth = activeItemWidth
+    }
+
+    fun setActiveItemHeight(activeItemHeight: Int) = apply {
+        this.mActiveItemHeight = activeItemHeight
+    }
+
+    fun setItemMargin(itemMargin: Int) = apply {
+        this.mMarginItemDecoration.margin = itemMargin
+    }
+
+    fun setItemDrawableResource(drawableResource: Int) = apply {
+        this.mItemDrawableResource = drawableResource
+    }
+
+    fun setActiveItemDrawableResource(activeDrawableResource: Int) = apply {
+        this.mActiveItemDrawableResource = activeDrawableResource
     }
 
     override fun onPageSelected(position: Int) {
@@ -120,6 +148,9 @@ class DrawableIndicator : Indicator, RelativeLayout {
         return true
     }
 
+    /**
+     * 作为Indicator的RecyclerView的Adapter
+     */
     private inner class DrawableIndicatorAdapter :
         RecyclerView.Adapter<ViewHolder>() {
 
@@ -136,13 +167,19 @@ class DrawableIndicator : Indicator, RelativeLayout {
             notifyDataSetChanged()
         }
 
+        override fun getItemViewType(position: Int): Int {
+            return if (mActiveIndex == position) 1 else 0
+        }
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(ImageView(parent.context).apply {
-                layoutParams = LinearLayout.LayoutParams(mItemWidth, mItemHeight).apply {
-                    marginStart = mItemMargin / 2
-                    marginEnd = mItemMargin / 2
+            return ViewHolder(
+                ImageView(parent.context).apply {
+                    layoutParams = LayoutParams(
+                        if (viewType == 1) mActiveItemWidth else mItemWidth,
+                        if (viewType == 1) mActiveItemHeight else mItemHeight
+                    )
                 }
-            })
+            )
         }
 
         override fun getItemCount(): Int {
@@ -150,7 +187,9 @@ class DrawableIndicator : Indicator, RelativeLayout {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.imageView.setImageResource(if (position == mActiveIndex) mActiveItemDrawableResource else mItemDrawableResource)
+            holder.imageView.setImageResource(
+                if (position == mActiveIndex) mActiveItemDrawableResource else mItemDrawableResource
+            )
         }
 
     }
@@ -158,5 +197,4 @@ class DrawableIndicator : Indicator, RelativeLayout {
     private class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView = itemView as ImageView
     }
-
 }
