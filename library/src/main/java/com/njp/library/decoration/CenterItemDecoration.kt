@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 
 /**
- * RecyclerView在Item副轴方向高度不一致情况下，实现副轴方向上居中效果的Decoration
+ * RecyclerView实现副轴方向上居中效果的Decoration
  */
 class CenterItemDecoration : ItemDecoration() {
 

@@ -28,7 +28,10 @@ abstract class LoopFragmentAdapter : FragmentStateAdapter, Countable {
     private var mRecyclerView: RecyclerView? = null
 
     //返回最大数值来实现无限滚动效果
-    final override fun getItemCount(): Int = if (getRealItemCount() == 0) 0 else Int.MAX_VALUE
+    final override fun getItemCount(): Int {
+        val realCount = getRealItemCount()
+        return if (realCount > 1) Int.MAX_VALUE else realCount
+    }
 
     //通过取余计算出当前的下标
     private fun calculateRealPosition(position: Int) = position % getRealItemCount()

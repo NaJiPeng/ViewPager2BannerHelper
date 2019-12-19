@@ -16,6 +16,7 @@ import com.njp.library.decoration.MarginItemDecoration
  */
 class DrawableIndicator : Indicator, RelativeLayout {
 
+    private lateinit var mRecyclerView: RecyclerView
     private val mAdapter = DrawableIndicatorAdapter()
     private val mCenterItemDecoration = CenterItemDecoration()
     private val mMarginItemDecoration = MarginItemDecoration(
@@ -27,6 +28,7 @@ class DrawableIndicator : Indicator, RelativeLayout {
     private var mActiveItemHeight = resources.getDimensionPixelSize(R.dimen.item_size)
     private var mItemDrawableResource = R.drawable.default_item
     private var mActiveItemDrawableResource = R.drawable.active_item
+    private var mIndicatorTransformer: IndicatorTransformer? = null
 
     constructor(context: Context) : super(context) {
         initialize(context, null)
@@ -50,15 +52,15 @@ class DrawableIndicator : Indicator, RelativeLayout {
             LayoutParams.MATCH_PARENT
         )
         gravity = Gravity.CENTER
-        val recyclerView = RecyclerView(context).apply {
+        mRecyclerView = RecyclerView(context).apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-            layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
             adapter = mAdapter
             addItemDecoration(mCenterItemDecoration)
             addItemDecoration(mMarginItemDecoration)
         }
 
-        addView(recyclerView)
+        addView(mRecyclerView)
         if (attrs != null) {
             initAttrs(context, attrs)
         }
@@ -129,12 +131,47 @@ class DrawableIndicator : Indicator, RelativeLayout {
         this.mActiveItemDrawableResource = activeDrawableResource
     }
 
+    fun setIndicatorTransformer(indicatorTransformer: IndicatorTransformer) = apply {
+        this.mIndicatorTransformer = indicatorTransformer
+    }
+
+    fun setIndicatorTransformer(indicatorTransformer: (indicator: View, offset: Float) -> Unit) =
+        apply {
+            this.mIndicatorTransformer = object : IndicatorTransformer {
+                override fun transformIndicator(indicator: View, offset: Float) {
+                    indicatorTransformer.invoke(indicator, offset)
+                }
+
+            }
+        }
+
     override fun onPageSelected(position: Int) {
         mAdapter.setActiveIndex(position)
     }
 
+    /**
+     * 0表示未选中状态，1表示选中状态
+     * 以下为从第二页转到第三页的回调状态：
+     *
+     * 0.0——1.0——0.0——0.0
+     * 0.0——0.8——0.2——0.0
+     * 0.0——0.5——0.5——0.0
+     * 0.0——0.3——0.7——0.0
+     * 0.0——0.0——1.0——0.0
+     */
     override fun onPageScrolled(position: Int, positionOffset: Float) {
-        //DO NOTHING
+        mRecyclerView.getChildAt(position)?.let {
+            mIndicatorTransformer?.transformIndicator(
+                mRecyclerView.getChildAt(position),
+                1 - positionOffset
+            )
+        }
+        mRecyclerView.getChildAt((position + 1) % mAdapter.itemCount)?.let {
+            mIndicatorTransformer?.transformIndicator(
+                mRecyclerView.getChildAt((position + 1) % mAdapter.itemCount),
+                positionOffset
+            )
+        }
     }
 
     override fun onCountChange(count: Int) {
