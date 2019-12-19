@@ -2,7 +2,6 @@ package com.njp.library.indicator
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -140,13 +139,19 @@ class DrawableIndicator : Indicator, LinearLayout {
             val width = if (index == mSelectedIndex) mSelectedItemWidth else mItemWidth
             val height = if (index == mSelectedIndex) mSelectedItemHeight else mItemHeight
 
+            val margin = mItemMargin / 2
+            val horizontalMargin = if (orientation == HORIZONTAL) margin else 0
+            val verticalMargin = if (orientation == VERTICAL) margin else 0
+
             val drawableResource =
                 if (index == mSelectedIndex) mSelectedItemDrawableResource else mItemDrawableResource
 
             (view as ImageView).apply {
-                layoutParams = view.layoutParams.apply {
+                layoutParams = (view.layoutParams as LayoutParams).apply {
                     this.width = width
                     this.height = height
+
+                    setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin)
                 }
                 setImageResource(drawableResource)
             }
@@ -163,13 +168,13 @@ class DrawableIndicator : Indicator, LinearLayout {
         refresh()
     }
 
-    fun setActiveItemWidth(activeItemWidth: Int) {
-        this.mSelectedItemWidth = activeItemWidth
+    fun setSelectedItemWidth(selectedItemWidth: Int) {
+        this.mSelectedItemWidth = selectedItemWidth
         refresh()
     }
 
-    fun setActiveItemHeight(activeItemHeight: Int) {
-        this.mSelectedItemHeight = activeItemHeight
+    fun setSelectedItemHeight(selectedItemHeight: Int) {
+        this.mSelectedItemHeight = selectedItemHeight
         refresh()
     }
 
@@ -183,8 +188,8 @@ class DrawableIndicator : Indicator, LinearLayout {
         refresh()
     }
 
-    fun setActiveItemDrawableResource(activeDrawableResource: Int) {
-        this.mSelectedItemDrawableResource = activeDrawableResource
+    fun setSelectedItemDrawableResource(selectedDrawableResource: Int) {
+        this.mSelectedItemDrawableResource = selectedDrawableResource
         refresh()
     }
 
