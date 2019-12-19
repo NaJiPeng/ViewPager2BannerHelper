@@ -2,33 +2,46 @@ package com.njp.library.indicator
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
-import android.widget.RelativeLayout
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.widget.LinearLayout
+import androidx.core.view.doOnNextLayout
+import androidx.core.view.forEachIndexed
+import androidx.viewpager2.widget.ViewPager2
 import com.njp.library.R
-import com.njp.library.decoration.CenterItemDecoration
-import com.njp.library.decoration.MarginItemDecoration
+import com.njp.library.adapter.Countable
 
 /**
  * ImageView作为指示器
  */
-class DrawableIndicator : Indicator, RelativeLayout {
+class DrawableIndicator : Indicator, LinearLayout {
 
-    private lateinit var mRecyclerView: RecyclerView
-    private val mAdapter = DrawableIndicatorAdapter()
-    private val mCenterItemDecoration = CenterItemDecoration()
-    private val mMarginItemDecoration = MarginItemDecoration(
-        resources.getDimensionPixelSize(R.dimen.item_margin)
-    )
+    private var mItemCount = 0
+    private var mSelectedIndex = -1
     private var mItemWidth = resources.getDimensionPixelSize(R.dimen.item_size)
     private var mItemHeight = resources.getDimensionPixelSize(R.dimen.item_size)
-    private var mActiveItemWidth = resources.getDimensionPixelSize(R.dimen.item_size)
-    private var mActiveItemHeight = resources.getDimensionPixelSize(R.dimen.item_size)
+    private var mSelectedItemWidth = resources.getDimensionPixelSize(R.dimen.item_size)
+    private var mSelectedItemHeight = resources.getDimensionPixelSize(R.dimen.item_size)
+    private var mItemMargin = resources.getDimensionPixelSize(R.dimen.item_margin)
     private var mItemDrawableResource = R.drawable.default_item
-    private var mActiveItemDrawableResource = R.drawable.active_item
+    private var mSelectedItemDrawableResource = R.drawable.active_item
     private var mIndicatorTransformer: IndicatorTransformer? = null
+
+    private val callback = object : ViewPager2.OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            this@DrawableIndicator.onPageSelected(position % mItemCount)
+
+        }
+
+        override fun onPageScrolled(
+            position: Int,
+            positionOffset: Float,
+            positionOffsetPixels: Int
+        ) {
+            this@DrawableIndicator.onPageScrolled(position % mItemCount, positionOffset)
+        }
+    }
 
     constructor(context: Context) : super(context) {
         initialize(context, null)
@@ -46,21 +59,16 @@ class DrawableIndicator : Indicator, RelativeLayout {
         initialize(context, attrs)
     }
 
+    /**
+     * 初始化
+     */
     private fun initialize(context: Context, attrs: AttributeSet?) {
         layoutParams = layoutParams ?: LayoutParams(
             LayoutParams.MATCH_PARENT,
             LayoutParams.MATCH_PARENT
         )
         gravity = Gravity.CENTER
-        mRecyclerView = RecyclerView(context).apply {
-            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-            layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT)
-            adapter = mAdapter
-            addItemDecoration(mCenterItemDecoration)
-            addItemDecoration(mMarginItemDecoration)
-        }
 
-        addView(mRecyclerView)
         if (attrs != null) {
             initAttrs(context, attrs)
         }
@@ -71,6 +79,7 @@ class DrawableIndicator : Indicator, RelativeLayout {
      */
     private fun initAttrs(context: Context, attrs: AttributeSet) {
         context.obtainStyledAttributes(attrs, R.styleable.DrawableIndicator).apply {
+
             mItemWidth = getDimensionPixelSize(
                 R.styleable.DrawableIndicator_item_width,
                 resources.getDimensionPixelSize(R.dimen.item_size)
@@ -79,15 +88,15 @@ class DrawableIndicator : Indicator, RelativeLayout {
                 R.styleable.DrawableIndicator_item_height,
                 resources.getDimensionPixelSize(R.dimen.item_size)
             )
-            mActiveItemWidth = getDimensionPixelSize(
-                R.styleable.DrawableIndicator_active_item_width,
+            mSelectedItemWidth = getDimensionPixelSize(
+                R.styleable.DrawableIndicator_selected_item_width,
                 mItemWidth
             )
-            mActiveItemHeight = getDimensionPixelSize(
-                R.styleable.DrawableIndicator_active_item_height,
+            mSelectedItemHeight = getDimensionPixelSize(
+                R.styleable.DrawableIndicator_selected_item_height,
                 mItemHeight
             )
-            mMarginItemDecoration.margin = getDimensionPixelSize(
+            mItemMargin = getDimensionPixelSize(
                 R.styleable.DrawableIndicator_item_margin,
                 resources.getDimensionPixelSize(R.dimen.item_margin)
             )
@@ -95,45 +104,94 @@ class DrawableIndicator : Indicator, RelativeLayout {
                 R.styleable.DrawableIndicator_item_drawable,
                 R.drawable.default_item
             )
-            mActiveItemDrawableResource = getResourceId(
-                R.styleable.DrawableIndicator_active_item_drawable,
+            mSelectedItemDrawableResource = getResourceId(
+                R.styleable.DrawableIndicator_selected_item_drawable,
                 R.drawable.active_item
             )
             recycle()
         }
     }
 
-    fun setItemWidth(itemWidth: Int) = apply {
+    /**
+     * 初始化indicators
+     */
+    private fun initIndicators() {
+        removeAllViews()
+        for (i in 0 until mItemCount) {
+            val margin = mItemMargin / 2
+            val horizontalMargin = if (orientation == HORIZONTAL) margin else 0
+            val verticalMargin = if (orientation == VERTICAL) margin else 0
+
+            addView(ImageView(context).apply {
+                layoutParams = LayoutParams(mItemWidth, mItemWidth).apply {
+                    setMargins(horizontalMargin, verticalMargin, horizontalMargin, verticalMargin)
+                }
+                setImageResource(mItemDrawableResource)
+            })
+        }
+
+    }
+
+    /**
+     * 刷新视图状态
+     */
+    private fun refresh() {
+        forEachIndexed { index, view ->
+            val width = if (index == mSelectedIndex) mSelectedItemWidth else mItemWidth
+            val height = if (index == mSelectedIndex) mSelectedItemHeight else mItemHeight
+
+            val drawableResource =
+                if (index == mSelectedIndex) mSelectedItemDrawableResource else mItemDrawableResource
+
+            (view as ImageView).apply {
+                layoutParams = view.layoutParams.apply {
+                    this.width = width
+                    this.height = height
+                }
+                setImageResource(drawableResource)
+            }
+        }
+    }
+
+    fun setItemWidth(itemWidth: Int) {
         this.mItemWidth = itemWidth
+        refresh()
     }
 
-    fun setItemHeight(itemHeight: Int) = apply {
+    fun setItemHeight(itemHeight: Int) {
         this.mItemHeight = itemHeight
+        refresh()
     }
 
-    fun setActiveItemWidth(activeItemWidth: Int) = apply {
-        this.mActiveItemWidth = activeItemWidth
+    fun setActiveItemWidth(activeItemWidth: Int) {
+        this.mSelectedItemWidth = activeItemWidth
+        refresh()
     }
 
-    fun setActiveItemHeight(activeItemHeight: Int) = apply {
-        this.mActiveItemHeight = activeItemHeight
+    fun setActiveItemHeight(activeItemHeight: Int) {
+        this.mSelectedItemHeight = activeItemHeight
+        refresh()
     }
 
-    fun setItemMargin(itemMargin: Int) = apply {
-        this.mMarginItemDecoration.margin = itemMargin
+    fun setItemMargin(itemMargin: Int) {
+        this.mItemMargin = itemMargin
+        refresh()
     }
 
-    fun setItemDrawableResource(drawableResource: Int) = apply {
+    fun setItemDrawableResource(drawableResource: Int) {
         this.mItemDrawableResource = drawableResource
+        refresh()
     }
 
-    fun setActiveItemDrawableResource(activeDrawableResource: Int) = apply {
-        this.mActiveItemDrawableResource = activeDrawableResource
+    fun setActiveItemDrawableResource(activeDrawableResource: Int) {
+        this.mSelectedItemDrawableResource = activeDrawableResource
+        refresh()
     }
 
-    fun setIndicatorTransformer(indicatorTransformer: IndicatorTransformer) = apply {
+    fun setIndicatorTransformer(indicatorTransformer: IndicatorTransformer) {
         this.mIndicatorTransformer = indicatorTransformer
     }
+
 
     fun setIndicatorTransformer(indicatorTransformer: (indicator: View, offset: Float) -> Unit) =
         apply {
@@ -145,8 +203,40 @@ class DrawableIndicator : Indicator, RelativeLayout {
             }
         }
 
+
+    override fun setupWithViewPager2(viewPager2: ViewPager2) {
+
+        //为了监听Adapter变动和数据个数变动
+        viewPager2.doOnNextLayout {
+            setupWithViewPager2(viewPager2)
+        }
+
+        val adapter = viewPager2.adapter
+
+        //初始化个数
+        onCountChange(
+            if (adapter is Countable) adapter.getRealItemCount() else adapter?.itemCount ?: 0
+        )
+
+        viewPager2.unregisterOnPageChangeCallback(callback)
+        viewPager2.registerOnPageChangeCallback(callback)
+
+        //设置当前Indicator的选中项
+        onPageSelected(viewPager2.currentItem % mItemCount)
+    }
+
+    override fun onCountChange(count: Int) {
+        if (count != mItemCount) {
+            this.mItemCount = count
+            initIndicators()
+        }
+    }
+
     override fun onPageSelected(position: Int) {
-        mAdapter.setActiveIndex(position)
+        if (position != mSelectedIndex) {
+            mSelectedIndex = position
+            refresh()
+        }
     }
 
     /**
@@ -160,74 +250,12 @@ class DrawableIndicator : Indicator, RelativeLayout {
      * 0.0——0.0——1.0——0.0
      */
     override fun onPageScrolled(position: Int, positionOffset: Float) {
-        mRecyclerView.getChildAt(position)?.let {
-            mIndicatorTransformer?.transformIndicator(
-                mRecyclerView.getChildAt(position),
-                1 - positionOffset
-            )
+        getChildAt(position)?.let {
+            mIndicatorTransformer?.transformIndicator(it, 1 - positionOffset)
         }
-        mRecyclerView.getChildAt((position + 1) % mAdapter.itemCount)?.let {
-            mIndicatorTransformer?.transformIndicator(
-                mRecyclerView.getChildAt((position + 1) % mAdapter.itemCount),
-                positionOffset
-            )
+        getChildAt((position + 1) % mItemCount)?.let {
+            mIndicatorTransformer?.transformIndicator(it, positionOffset)
         }
     }
 
-    override fun onCountChange(count: Int) {
-        mAdapter.setCount(count)
-    }
-
-    /**
-     * 拦截触摸事件，防止影响下层ViewPager2滑动
-     */
-    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
-        return true
-    }
-
-    /**
-     * 作为Indicator的RecyclerView的Adapter
-     */
-    private inner class DrawableIndicatorAdapter :
-        RecyclerView.Adapter<ViewHolder>() {
-
-        private var mActiveIndex = 0
-        private var mCount = 0
-
-        fun setCount(count: Int) {
-            mCount = count
-            notifyDataSetChanged()
-        }
-
-        fun setActiveIndex(activeIndex: Int) {
-            mActiveIndex = activeIndex
-            notifyDataSetChanged()
-        }
-
-        override fun getItemViewType(position: Int) = if (mActiveIndex == position) 1 else 0
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(
-                ImageView(parent.context).apply {
-                    layoutParams = LayoutParams(
-                        if (viewType == 1) mActiveItemWidth else mItemWidth,
-                        if (viewType == 1) mActiveItemHeight else mItemHeight
-                    )
-                }
-            )
-        }
-
-        override fun getItemCount() = mCount
-
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.imageView.setImageResource(
-                if (position == mActiveIndex) mActiveItemDrawableResource else mItemDrawableResource
-            )
-        }
-
-    }
-
-    private class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imageView = itemView as ImageView
-    }
 }

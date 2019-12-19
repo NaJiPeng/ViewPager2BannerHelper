@@ -57,8 +57,8 @@ class MainActivity : AppCompatActivity() {
 
         indicator.setupWithViewPager2(viewPager2)
         indicator.setIndicatorTransformer { indicator, offset ->
-            indicator.scaleX = 1 + offset * 1.0f
-            indicator.scaleY = 1 + offset * 1.0f
+            indicator.scaleX = 1 + offset * 0.4f
+            indicator.scaleY = 1 + offset * 0.4f
         }
 
 
