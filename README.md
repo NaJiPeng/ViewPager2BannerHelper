@@ -27,7 +27,7 @@ ViewPager2实现轮播效果的辅助工具，包括：
 
    ```groovy
    dependencies {
-       implementation 'com.github.NaJiPeng:ViewPager2BannerHelper:0.3.0'
+       implementation 'com.github.NaJiPeng:ViewPager2BannerHelper:0.3.1'
    }
    ```
 
