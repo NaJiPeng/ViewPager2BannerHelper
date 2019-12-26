@@ -20,9 +20,14 @@
         <com.njp.library.indicator.DrawableIndicator
             android:id="@+id/indicator"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="5dp" />
+            android:layout_marginBottom="5dp"
+            app:item_drawable="@drawable/animator_path"
+            app:item_height="20dp"
+            app:item_width="20dp"
+            app:selected_item_drawable="@drawable/ic_check" />
+
     </RelativeLayout>
 
 </LinearLayout>

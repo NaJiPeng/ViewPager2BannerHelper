@@ -159,38 +159,52 @@ class DrawableIndicator : Indicator, LinearLayout {
     }
 
     fun setItemWidth(itemWidth: Int) {
-        this.mItemWidth = itemWidth
-        refresh()
+        if (this.mItemWidth != itemWidth) {
+            this.mItemWidth = itemWidth
+            refresh()
+        }
     }
 
     fun setItemHeight(itemHeight: Int) {
-        this.mItemHeight = itemHeight
-        refresh()
+        if (this.mItemHeight != itemHeight) {
+            this.mItemHeight = itemHeight
+            refresh()
+        }
     }
 
     fun setSelectedItemWidth(selectedItemWidth: Int) {
-        this.mSelectedItemWidth = selectedItemWidth
-        refresh()
+        if (mSelectedItemHeight != selectedItemWidth) {
+            this.mSelectedItemWidth = selectedItemWidth
+            refresh()
+        }
     }
 
     fun setSelectedItemHeight(selectedItemHeight: Int) {
-        this.mSelectedItemHeight = selectedItemHeight
-        refresh()
+        if (this.mSelectedItemHeight != selectedItemHeight) {
+            this.mSelectedItemHeight = selectedItemHeight
+            refresh()
+        }
     }
 
     fun setItemMargin(itemMargin: Int) {
-        this.mItemMargin = itemMargin
-        refresh()
+        if (this.mItemMargin != itemMargin) {
+            this.mItemMargin = itemMargin
+            refresh()
+        }
     }
 
     fun setItemDrawableResource(drawableResource: Int) {
-        this.mItemDrawableResource = drawableResource
-        refresh()
+        if (this.mItemDrawableResource != drawableResource) {
+            this.mItemDrawableResource = drawableResource
+            refresh()
+        }
     }
 
     fun setSelectedItemDrawableResource(selectedDrawableResource: Int) {
-        this.mSelectedItemDrawableResource = selectedDrawableResource
-        refresh()
+        if (this.mSelectedItemDrawableResource != selectedDrawableResource) {
+            this.mSelectedItemDrawableResource = selectedDrawableResource
+            refresh()
+        }
     }
 
     fun setIndicatorTransformer(indicatorTransformer: IndicatorTransformer) {
@@ -198,15 +212,14 @@ class DrawableIndicator : Indicator, LinearLayout {
     }
 
 
-    fun setIndicatorTransformer(indicatorTransformer: (indicator: View, offset: Float) -> Unit) =
-        apply {
-            this.mIndicatorTransformer = object : IndicatorTransformer {
-                override fun transformIndicator(indicator: View, offset: Float) {
-                    indicatorTransformer.invoke(indicator, offset)
-                }
-
+    fun setIndicatorTransformer(indicatorTransformer: (indicator: View, offset: Float) -> Unit) {
+        this.mIndicatorTransformer = object : IndicatorTransformer {
+            override fun transformIndicator(indicator: View, offset: Float) {
+                indicatorTransformer.invoke(indicator, offset)
             }
+
         }
+    }
 
 
     override fun setupWithViewPager2(viewPager2: ViewPager2) {

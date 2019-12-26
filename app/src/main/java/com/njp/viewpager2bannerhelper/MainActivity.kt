@@ -1,9 +1,13 @@
 package com.njp.viewpager2bannerhelper
 
+import android.animation.Animator
+import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.VectorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import androidx.viewpager2.widget.ViewPager2
 import com.njp.library.controller.AutoPlayController
 import com.njp.library.controller.AutoPlayMode
@@ -35,30 +39,9 @@ class MainActivity : AppCompatActivity() {
             .setLifecycleOwner(this)
             .setViewPager2(viewPager2)
 
-//        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-//            override fun onPageScrolled(
-//                position: Int,
-//                positionOffset: Float,
-//                positionOffsetPixels: Int
-//            ) {
-//                Log.i("VVVV", "$position     $positionOffset")
-//            }
-//        })
-
-//        viewPager2.postDelayed({
-//            viewPager2.adapter = MyAdapter(
-//                listOf(
-//                    "https://th.wallhaven.cc/small/lm/lmg21p.jpg",
-//                    "https://th.wallhaven.cc/small/13/13oq3v.jpg",
-//                    "https://th.wallhaven.cc/small/j5/j5k825.jpg"
-//                )
-//            )
-//        }, 3000)
-
         indicator.setupWithViewPager2(viewPager2)
         indicator.setIndicatorTransformer { indicator, offset ->
-            indicator.scaleX = 1 + offset * 0.4f
-            indicator.scaleY = 1 + offset * 0.4f
+            val vectorDrawable = (indicator as ImageView).drawable as VectorDrawable
         }
 
 

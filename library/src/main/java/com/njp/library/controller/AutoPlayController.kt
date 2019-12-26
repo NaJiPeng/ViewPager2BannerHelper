@@ -1,6 +1,7 @@
 package com.njp.library.controller
 
 import android.os.Handler
+import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -94,9 +95,7 @@ class AutoPlayController : LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     private fun onDestroy() {
-        if (AutoPlayMode.WHOLE == mAutoPlayMode) {
-            stopPlay()
-        }
+        stopPlay()
         mViewPager2 = null
     }
 
@@ -112,6 +111,16 @@ class AutoPlayController : LifecycleObserver {
                     ViewPager2.SCROLL_STATE_SETTLING -> {//DO NOTHING
                     }
                 }
+            }
+        })
+
+        viewPager2.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewDetachedFromWindow(v: View?) {
+                mViewPager2 = null
+            }
+
+            override fun onViewAttachedToWindow(v: View?) {
+                //DO NOTHING
             }
         })
     }
