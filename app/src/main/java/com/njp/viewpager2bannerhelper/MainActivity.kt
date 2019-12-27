@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
             .enableAutoPlay(true)
             .setAutoPlayMode(AutoPlayMode.VISIBLE)
             .setInterval(2000)
-            .setlifecycle(this.lifecycle)
+            .setLifecycle(this.lifecycle)
             .setViewPager2(viewPager2)
 
         indicator.setupWithViewPager2(viewPager2)

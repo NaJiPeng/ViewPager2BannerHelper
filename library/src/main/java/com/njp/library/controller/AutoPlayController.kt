@@ -23,7 +23,7 @@ class AutoPlayController : LifecycleObserver {
 
     private var mViewPager2: ViewPager2? = null
 
-    private var mAutoPlayMode = AutoPlayMode.VISIBLE
+    private var mAutoPlayMode = AutoPlayMode.NONE
 
     fun enableAutoPlay(autoPlay: Boolean) = apply {
         this.autoPlay = autoPlay
@@ -38,7 +38,7 @@ class AutoPlayController : LifecycleObserver {
         setupViewPager2(viewPager2)
     }
 
-    fun setlifecycle(lifecycle: Lifecycle) = apply {
+    fun setLifecycle(lifecycle: Lifecycle) = apply {
         lifecycle.addObserver(this)
     }
 
