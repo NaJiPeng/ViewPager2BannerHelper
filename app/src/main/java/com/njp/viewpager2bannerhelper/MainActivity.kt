@@ -1,9 +1,7 @@
 package com.njp.viewpager2bannerhelper
 
-import android.graphics.drawable.VectorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageView
 import com.njp.library.controller.AutoPlayController
 import com.njp.library.controller.AutoPlayMode
 import kotlinx.android.synthetic.main.activity_main.*
@@ -35,7 +33,8 @@ class MainActivity : AppCompatActivity() {
 
         indicator.setupWithViewPager2(viewPager2)
         indicator.setIndicatorTransformer { indicator, offset ->
-            val vectorDrawable = (indicator as ImageView).drawable as VectorDrawable
+            indicator.scaleX = 1 + offset * 0.3f
+            indicator.scaleY = 1 + offset * 0.3f
         }
 
 
