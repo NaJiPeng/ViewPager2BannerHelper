@@ -1,17 +1,11 @@
 package com.njp.viewpager2bannerhelper
 
-import android.animation.Animator
-import android.graphics.drawable.AnimatedVectorDrawable
 import android.graphics.drawable.VectorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.widget.ImageView
-import androidx.viewpager2.widget.ViewPager2
 import com.njp.library.controller.AutoPlayController
 import com.njp.library.controller.AutoPlayMode
-import com.njp.library.indicator.IndicatorTransformer
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -36,7 +30,7 @@ class MainActivity : AppCompatActivity() {
             .enableAutoPlay(true)
             .setAutoPlayMode(AutoPlayMode.VISIBLE)
             .setInterval(2000)
-            .setLifecycleOwner(this)
+            .setlifecycle(this.lifecycle)
             .setViewPager2(viewPager2)
 
         indicator.setupWithViewPager2(viewPager2)

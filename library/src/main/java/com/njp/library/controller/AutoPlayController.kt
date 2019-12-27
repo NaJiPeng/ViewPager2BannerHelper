@@ -4,7 +4,6 @@ import android.os.Handler
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.viewpager2.widget.ViewPager2
 
@@ -39,8 +38,8 @@ class AutoPlayController : LifecycleObserver {
         setupViewPager2(viewPager2)
     }
 
-    fun setLifecycleOwner(lifecycleOwner: LifecycleOwner) = apply {
-        lifecycleOwner.lifecycle.addObserver(this)
+    fun setlifecycle(lifecycle: Lifecycle) = apply {
+        lifecycle.addObserver(this)
     }
 
     fun setAutoPlayMode(autoPlayMode: AutoPlayMode) = apply {
