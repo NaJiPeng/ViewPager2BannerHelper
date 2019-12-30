@@ -102,7 +102,7 @@ ViewPager2实现轮播效果的辅助工具，包括：
    ```kotlin
    AutoPlayController()
    	.enableAutoPlay(true)
-   	.setAutoPlayMode(AutoPlayMode.VISIBLE)
+   	.setAutoPlayMode(AutoPlayController.MODE_VISIBLE)
    	.setInterval(2000)
    	.setLifecycleOwner(this)
    	.setViewPager2(banner)
