@@ -59,7 +59,7 @@ public class AutoPlayController implements LifecycleObserver {
 
     private View.OnAttachStateChangeListener mListener = new View.OnAttachStateChangeListener() {
         @Override
-        public void onViewAttachedToWindow(View v) {
+        public void onViewAttachedToWindow(View v) {//DO NOTHING
         }
 
         @Override
