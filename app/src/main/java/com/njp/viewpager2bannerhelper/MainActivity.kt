@@ -3,7 +3,6 @@ package com.njp.viewpager2bannerhelper
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.njp.library.controller.AutoPlayController
-import com.njp.library.controller.AutoPlayMode
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -26,7 +25,7 @@ class MainActivity : AppCompatActivity() {
 
         AutoPlayController()
             .enableAutoPlay(true)
-            .setAutoPlayMode(AutoPlayMode.VISIBLE)
+            .setAutoPlayMode(AutoPlayController.MODE_VISIBLE)
             .setInterval(2000)
             .setLifecycle(this.lifecycle)
             .setViewPager2(viewPager2)
