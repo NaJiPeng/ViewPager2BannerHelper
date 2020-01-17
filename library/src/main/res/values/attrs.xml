@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="DrawableIndicator">
+    <declare-styleable name="ImageIndicator">
         <attr name="item_width" format="dimension" />
         <attr name="item_height" format="dimension" />
         <attr name="selected_item_width" format="dimension" />
         <attr name="selected_item_height" format="dimension" />
         <attr name="item_margin" format="dimension" />
-        <attr name="item_drawable" format="reference" />
-        <attr name="selected_item_drawable" format="reference" />
+        <attr name="item_src" format="reference" />
+        <attr name="selected_item_src" format="reference" />
     </declare-styleable>
 </resources>
