@@ -8,32 +8,15 @@ import com.njp.library.adapter.Countable;
 /**
  * 处理Indicator通用逻辑的类
  */
-public class IndicatorHelper {
+public class IndicatorHelper extends ViewPager2.OnPageChangeCallback{
 
     private Indicator mIndicator;
-
-    private ViewPager2.OnPageChangeCallback mCallback = new ViewPager2.OnPageChangeCallback() {
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            mIndicator.onPageScrolled(position % mIndicator.getItemCount(), positionOffset, positionOffsetPixels);
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            mIndicator.onPageSelected(position % mIndicator.getItemCount());
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-            mIndicator.onPageScrollStateChanged(state);
-        }
-    };
 
     public IndicatorHelper(Indicator mIndicator) {
         this.mIndicator = mIndicator;
     }
 
-    public void bind(ViewPager2 viewPager2) {
+    void bind(ViewPager2 viewPager2) {
 
         //为了监听Adapter变动和数据个数变动
         ViewKt.doOnNextLayout(viewPager2, view -> {
@@ -52,14 +35,28 @@ public class IndicatorHelper {
         }
         mIndicator.setItemCount(count);
 
-        viewPager2.unregisterOnPageChangeCallback(mCallback);
-        viewPager2.registerOnPageChangeCallback(mCallback);
+        viewPager2.unregisterOnPageChangeCallback(this);
+        viewPager2.registerOnPageChangeCallback(this);
 
         mIndicator.onPageSelected(viewPager2.getCurrentItem() % mIndicator.getItemCount());
     }
 
-    public void unBind(ViewPager2 viewPager2) {
-        viewPager2.unregisterOnPageChangeCallback(mCallback);
+    void unBind(ViewPager2 viewPager2) {
+        viewPager2.unregisterOnPageChangeCallback(this);
     }
 
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        mIndicator.onPageScrolled(position % mIndicator.getItemCount(), positionOffset, positionOffsetPixels);
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        mIndicator.onPageSelected(position % mIndicator.getItemCount());
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+        mIndicator.onPageScrollStateChanged(state);
+    }
 }

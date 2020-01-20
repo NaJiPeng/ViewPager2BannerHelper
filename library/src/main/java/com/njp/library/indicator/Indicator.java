@@ -14,11 +14,11 @@ public interface Indicator extends ViewPager.OnPageChangeListener {
 
     void setItemCount(int count);
 
-    default void setupWithViewPager2(@NotNull ViewPager2 viewPager2){
+    default void registerViewPager2(@NotNull ViewPager2 viewPager2){
         getHelper().bind(viewPager2);
     }
 
-    default void unbindViewPager2(@NotNull ViewPager2 viewPager2){
+    default void unregisterviewPager2(@NotNull ViewPager2 viewPager2){
         getHelper().unBind(viewPager2);
     }
 

@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.njp.library.indicator.indicators.ImageIndicator
+        <com.njp.library.indicator.indicators.SlideIndicator
             android:id="@+id/indicator"
             android:layout_width="match_parent"
             android:layout_height="30dp"

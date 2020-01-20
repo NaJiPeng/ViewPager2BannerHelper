@@ -19,7 +19,7 @@ import com.njp.library.indicator.IndicatorTransformer;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * ImageView作为指示器
+ * ImageView作为指示器的Indicator
  */
 public class ImageIndicator extends LinearLayout implements Indicator {
 
@@ -182,14 +182,14 @@ public class ImageIndicator extends LinearLayout implements Indicator {
         }
     }
 
-    public void setItemDrawableResource(int imageResource) {
+    public void setItemImageResource(int imageResource) {
         if (this.mItemImageResource != imageResource) {
             this.mItemImageResource = imageResource;
             refresh();
         }
     }
 
-    public void setSelectedItemDrawableResource(int selectedImageResource) {
+    public void setSelectedItemImageResource(int selectedImageResource) {
         if (this.mSelectedItemImageResource != selectedImageResource) {
             this.mSelectedItemImageResource = selectedImageResource;
             refresh();

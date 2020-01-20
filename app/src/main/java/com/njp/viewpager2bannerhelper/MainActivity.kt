@@ -30,11 +30,11 @@ class MainActivity : AppCompatActivity() {
             .setLifecycle(this.lifecycle)
             .setViewPager2(viewPager2)
 
-        indicator.setupWithViewPager2(viewPager2)
-        indicator.setIndicatorTransformer { indicator, offset ->
-            indicator.scaleX = 1 + offset * 0.3f
-            indicator.scaleY = 1 + offset * 0.3f
-        }
+        indicator.registerViewPager2(viewPager2)
+//        indicator.setIndicatorTransformer { indicator, offset ->
+//            indicator.scaleX = 1 + offset * 0.3f
+//            indicator.scaleY = 1 + offset * 0.3f
+//        }
 
 
     }
